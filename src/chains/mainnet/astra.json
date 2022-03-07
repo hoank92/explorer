@@ -1,0 +1,8 @@
+{
+    "chain_name": "astra-testnet",
+    "api": "https://api.astranaut.dev",
+    "sdk_version": "0.42.9",
+    "addr_prefix": "ethm",
+    "excludes": "mint",
+    "logo": "https://salt.tikicdn.com/ts/ta/cf/41/a6/5cfa6980b460bca5292103cbf93c69a6.png"
+}
