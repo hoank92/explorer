@@ -14,9 +14,9 @@ const router = new VueRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/Home.vue'),
+      // component: () => import('@/views/Home.vue'),
+      component: () => import('@/views/Summary.vue'),
       meta: {
-        layout: 'full',
         pageTitle: 'Home',
         breadcrumb: [
           {
@@ -144,23 +144,23 @@ const router = new VueRouter({
       },
     },
     // chain modules
+    // {
+    //   path: '/',
+    //   name: 'info',
+    //   alias: '/:chain',
+    //   component: () => import('@/views/Summary.vue'),
+    //   meta: {
+    //     pageTitle: 'Home',
+    //     breadcrumb: [
+    //       {
+    //         text: 'Home',
+    //         active: true,
+    //       },
+    //     ],
+    //   },
+    // },
     {
-      path: '/:chain/',
-      name: 'info',
-      alias: '/:chain',
-      component: () => import('@/views/Summary.vue'),
-      meta: {
-        pageTitle: 'Home',
-        breadcrumb: [
-          {
-            text: 'Home',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/:chain/uptime',
+      path: '/uptime',
       name: 'uptime',
       component: () => import('@/views/Uptime.vue'),
       meta: {
@@ -174,7 +174,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/uptime/my',
+      path: '/uptime/my',
       name: 'myuptime',
       component: () => import('@/views/UptimeMyValidators.vue'),
       meta: {
@@ -192,7 +192,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/account/:address',
+      path: '/account/:address',
       name: 'chain-account',
       component: () => import('@/views/WalletAccountDetail.vue'),
       meta: {
@@ -210,7 +210,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/staking',
+      path: '/staking',
       name: 'staking',
       component: () => import('@/views/Staking.vue'),
       meta: {
@@ -224,7 +224,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/staking/:address',
+      path: '/staking/:address',
       name: 'staking-valiator',
       component: () => import('@/views/StakingValidator.vue'),
       meta: {
@@ -242,7 +242,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/gov',
+      path: '/gov',
       name: 'governance',
       component: () => import('@/views/Governance.vue'),
       meta: {
@@ -260,7 +260,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/gov/:proposalid',
+      path: '/gov/:proposalid',
       name: 'proposal',
       component: () => import('@/views/GovernanceProposalView.vue'),
       meta: {
@@ -278,7 +278,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/blocks',
+      path: '/blocks',
       name: 'blocks',
       component: () => import('@/views/Blocks.vue'),
       meta: {
@@ -292,7 +292,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/blocks/:height',
+      path: '/blocks/:height',
       name: 'block',
       component: () => import('@/views/Block.vue'),
       meta: {
@@ -310,7 +310,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/tx/:hash',
+      path: '/tx/:hash',
       name: 'transaction',
       component: () => import('@/views/Transaction.vue'),
       meta: {
@@ -326,7 +326,7 @@ const router = new VueRouter({
     // custom modules for specified chains
     // 1. cosmos
     {
-      path: '/:chain/cosmos/trade',
+      path: '/cosmos/trade',
       name: 'gravity',
       component: () => import('@/views/GravityPool.vue'),
       meta: {
@@ -341,7 +341,7 @@ const router = new VueRouter({
     },
     // 2. OSMOSIS
     {
-      path: '/:chain/osmosis/trade/:poolid?',
+      path: '/osmosis/trade/:poolid?',
       name: 'osmosis-trade',
       component: () => import('@/views/OsmosisTrade.vue'),
       meta: {
@@ -395,7 +395,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const c = to.params.chain
+  const c = to.params.chain || 'astra'
   if (c) store.commit('select', { chain_name: c })
 
   const config = JSON.parse(localStorage.getItem('chains'))

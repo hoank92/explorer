@@ -22,7 +22,7 @@ configs.keys().forEach(k => {
 
 chains = update
 localStorage.setItem('chains', JSON.stringify(update))
-const selected = chains.cosmos
+const selected = chains.astra
 
 export default {
   namespaced: true,

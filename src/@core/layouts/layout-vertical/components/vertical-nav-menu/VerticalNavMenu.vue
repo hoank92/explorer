@@ -37,7 +37,7 @@
           </li>
 
           <!-- Toggler Button -->
-          <li class="nav-item nav-toggle">
+          <!-- <li class="nav-item nav-toggle">
             <b-link class="nav-link modern-nav-toggle">
               <feather-icon
                 icon="XIcon"
@@ -52,7 +52,7 @@
                 @click="toggleCollapsed"
               />
             </b-link>
-          </li>
+          </li> -->
         </ul>
       </slot>
     </div>
@@ -156,12 +156,43 @@ export default {
   },
   computed: {
     leftMenu() {
-      const preload = []
-      const { selected } = this.$store.state.chains
-      const current = navMenuItems.find(x => (x.title === selected.chain_name))
-      preload.push({ header: 'current' })
-      preload.push(current)
-      return preload.concat(navMenuItems.filter(x => x.title !== selected.chain_name))
+      // const preload = []
+      // const { selected } = this.$store.state.chains
+      // const current = navMenuItems.find(x => (x.title === selected.chain_name))
+      // preload.push(current)
+      // return preload.concat(navMenuItems.filter(x => x.title !== selected.chain_name))
+      return [
+        {
+          title: 'summary',
+          route: {
+            name: 'home',
+          },
+        },
+        {
+          title: 'blocks',
+          route: {
+            name: 'blocks',
+          },
+        },
+        {
+          title: 'staking',
+          route: {
+            name: 'staking',
+          },
+        },
+        {
+          title: 'governance',
+          route: {
+            name: 'governance',
+          },
+        },
+        {
+          title: 'uptime',
+          route: {
+            name: 'uptime',
+          },
+        },
+      ]
     },
   },
 }
