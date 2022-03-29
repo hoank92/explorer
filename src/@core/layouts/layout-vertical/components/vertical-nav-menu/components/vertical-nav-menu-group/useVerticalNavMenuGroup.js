@@ -15,7 +15,9 @@ export default function useVerticalNavMenuGroup(item) {
     // i.e. From Customizer Collapse or Using Link
     if (!isMouseHovered.value) {
       if (val) isOpen.value = false
-      else if (!val && isActive.value) isOpen.value = true
+      else if (!val && isActive.value) {
+        isOpen.value = true
+      }
     }
     /* eslint-enable */
   })
@@ -56,7 +58,7 @@ export default function useVerticalNavMenuGroup(item) {
   // ------------------------------------------------
   // isOpen
   // ------------------------------------------------
-  const isOpen = ref(false)
+  const isOpen = ref(true)
   watch(isOpen, val => {
     // if group is opened push it to the array
     if (val) openGroups.value.push(item.title)

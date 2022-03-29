@@ -1,8 +1,9 @@
 {
-    "chain_name": "astra-testnet",
+    "chain_name": "astra",
     "api": "https://api.astra.bar",
     "sdk_version": "0.42.9",
     "addr_prefix": "astra",
     "excludes": "mint",
-    "logo": "https://salt.tikicdn.com/ts/ta/cf/41/a6/5cfa6980b460bca5292103cbf93c69a6.png"
+    "logo": "https://salt.tikicdn.com/ts/ta/cf/41/a6/5cfa6980b460bca5292103cbf93c69a6.png",
+    "coin_type": "118"
 }

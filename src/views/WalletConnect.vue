@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div>
     <b-card
       v-if="calculateTotalChange !== 0"
       border-variant="primary"
@@ -78,6 +78,7 @@
     <div
       v-for="item,index in accounts"
       :key="index"
+      style="display: none"
     >
       <div>
         <div class="d-flex justify-content-between align-items-end mb-1">
@@ -259,7 +260,27 @@
       </div>
     </div>
 
-    <router-link to="/wallet/import">
+    <wallet-account-detail
+      v-if="walletAddress"
+      :wallet-address="walletAddress"
+    />
+
+    <div
+      v-if="walletAddress"
+      class="d-flex justify-content-end mb-1"
+    >
+      <b-button
+        variant="danger"
+        @click="removeAddress(walletAddress)"
+      >
+        Disconnect Wallet
+      </b-button>
+    </div>
+
+    <router-link
+      v-if="!walletAddress"
+      to="/wallet/import"
+    >
       <b-card class="addzone">
         <feather-icon icon="PlusIcon" />
         Connect Wallet
@@ -291,6 +312,7 @@ import OperationTransferComponent from './OperationTransferComponent.vue'
 import OperationTransfer2Component from './OperationTransfer2Component.vue'
 import ChartComponentDoughnut from './ChartComponentDoughnut.vue'
 import EchartScatter from './components/charts/EchartScatter.vue'
+import WalletAccountDetail from './WalletAccountDetail.vue'
 
 export default {
   components: {
@@ -314,6 +336,7 @@ export default {
     ToastificationContent,
     OperationTransfer2Component,
     ChartComponentDoughnut,
+    WalletAccountDetail,
     AppCollapse,
     AppCollapseItem,
     EchartScatter,
@@ -330,7 +353,7 @@ export default {
       selectedAddress: '',
       selectedName: '',
       transferWindow: false,
-      accounts: [],
+      accounts: {},
       balances: {},
       delegations: {},
       ibcDenom: {},
@@ -385,6 +408,14 @@ export default {
     }
   },
   computed: {
+    walletAddress() {
+      const accs = Object.keys(this.accounts || {})
+      // eslint-disable-next-line no-extra-boolean-cast
+      if (accs[0] !== undefined) {
+        return this.accounts[accs[0]].address?.[0]?.addr
+      }
+      return null
+    },
     defaultWallet: {
       get() {
         return this.$store.state.chains.defaultWallet
@@ -638,10 +669,12 @@ export default {
         if (newAddrs.length > 0) {
           this.$set(item, 'address', newAddrs)
         } else {
-          delete this.accounts[key]
+          // delete this.accounts[key]
+          this.accounts = {}
         }
       })
-      localStorage.setItem('accounts', JSON.stringify(this.accounts))
+      // localStorage.setItem('accounts', JSON.stringify(this.accounts))
+      localStorage.removeItem('accounts')
     },
     copy(v) {
       this.$copyText(v).then(() => {

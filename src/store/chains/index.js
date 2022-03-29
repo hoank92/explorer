@@ -5,7 +5,7 @@
  * @LastEditors: dingyiming
  * @LastEditTime: 2021-11-20 15:33:07
  */
-import { isTestnet } from '@/libs/utils'
+import { isTestnet, getLocalAccounts } from '@/libs/utils'
 
 let chains = {}
 
@@ -22,7 +22,7 @@ configs.keys().forEach(k => {
 
 chains = update
 localStorage.setItem('chains', JSON.stringify(update))
-const selected = chains.cosmos
+const selected = chains.astra
 
 export default {
   namespaced: true,
@@ -38,6 +38,15 @@ export default {
   getters: {
     getchains: state => state.chains,
     getAvatarById: state => id => state.avatars[id],
+    getDefaultWalletAddress: () => () => {
+      try {
+        const defaultWallet = localStorage.getItem('default-wallet')
+        return getLocalAccounts()[defaultWallet].address[0].addr
+      } catch (e) {
+        console.log(e)
+        return null
+      }
+    },
   },
   mutations: {
     setup_sdk_version(state, info) {

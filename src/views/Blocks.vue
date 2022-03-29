@@ -10,6 +10,7 @@
         </b-card-title>
       </b-card-header>
       <b-table
+        :busy="loading"
         :items="blocks"
         :fields="list_fields"
         :sort-desc="true"
@@ -18,6 +19,11 @@
         hover
         stacked="sm"
       >
+        <template #table-busy>
+          <div class="text-center">
+            <b-spinner type="grow" label="Loading..." />
+          </div>
+        </template>
         <!-- Column: Height -->
         <template #cell(height)="data">
           <router-link :to="`./blocks/${data.item.block.header.height}`">
@@ -44,7 +50,7 @@
 
 <script>
 import {
-  BTable, BCard, BCardHeader, BCardTitle, VBTooltip,
+  BTable, BCard, BCardHeader, BCardTitle, VBTooltip, BSpinner,
 } from 'bootstrap-vue'
 import {
   getCachedValidators,
@@ -59,6 +65,7 @@ export default {
     BTable,
     BCardHeader,
     BCardTitle,
+    BSpinner,
   },
   directives: {
     'b-tooltip': VBTooltip,
@@ -66,6 +73,7 @@ export default {
   data() {
     return {
       islive: true,
+      loading: true,
       blocks: [],
       list_fields: [
         {
@@ -114,6 +122,7 @@ export default {
           })
         }))
       })
+      this.loading = false
       this.timer = setInterval(this.fetch, 6000)
     })
   },

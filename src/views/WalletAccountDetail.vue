@@ -105,12 +105,12 @@
               </div>
               <div class="d-flex flex-column">
                 <span class="text-right">{{ formatToken(token) }}</span>
-                <small class="text-right">{{ currency }}{{ formatNumber(token.currency) }}</small>
+                <small class="text-right">{{ formatNumber(token.currency) }}{{ currency }}</small>
               </div>
             </div>
             <!--/ tokens -->
             <div class="text-right border-top pt-1">
-              <h2>Total: {{ currency }}{{ formatNumber(assetTable.currency) }}</h2>
+              <h2>Total: {{ formatNumber(assetTable.currency) }}{{ currency }}</h2>
             </div>
           </b-col>
         </b-row>
@@ -418,8 +418,14 @@ export default {
     'b-tooltip': VBTooltip,
     Ripple,
   },
+  props: {
+    walletAddress: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
-    const { address } = this.$route.params
+    const address = this.walletAddress || this.$route.params.address
     return {
       currency: getUserCurrencySign(),
       selectedValidator: '',
