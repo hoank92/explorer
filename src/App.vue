@@ -95,7 +95,7 @@ export default {
     })
 
     store.dispatch('chains/getQuotes')
-
+    window.store = store
     return {
       skinClasses,
     }

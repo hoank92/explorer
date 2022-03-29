@@ -6,6 +6,7 @@
       <li class="nav-item">
         <b-link
           class="nav-link"
+          href="/"
           @click="toggleVerticalMenuActive"
         >
           <b-avatar
@@ -33,6 +34,7 @@
       >
         <b-media-aside class="mr-75">
           <b-link
+            href="/"
             class="nav-link"
             @click="toggleVerticalMenuActive"
           >
@@ -51,32 +53,6 @@
           <h6 class="mb-0 text-uppercase">
             {{ selected_chain.chain_name }}
           </h6>
-          <small id="data-provider">
-            {{ currentApi }} ({{ selected_chain.sdk_version || '-' }})
-            <b-dropdown
-              class="ml-0"
-              variant="flat-primary"
-              no-caret
-              toggle-class="p-0"
-              right
-              sm
-            >
-              <template #button-content>
-                <feather-icon
-                  icon="RepeatIcon"
-                  size="12"
-                  class="cursor-pointer"
-                />
-              </template>
-              <b-dropdown-item
-                v-for="(item, i) in apiOptions"
-                :key="item"
-                @click="change(i)"
-              >
-                {{ item }}
-              </b-dropdown-item>
-            </b-dropdown>
-          </small>
         </b-media-body>
       </b-media>
     </div>
@@ -84,9 +60,6 @@
     <!-- <dark-Toggler class="d-none d-lg-block" /> -->
     <!-- Right Col -->
     <b-navbar-nav class="nav align-items-center ml-auto">
-      <dark-Toggler class="d-none d-lg-block" />
-      <search-bar />
-      <locale />
       <b-dropdown
         class="ml-1"
         variant="link"
@@ -117,7 +90,7 @@
           <span class="align-middle ml-50">Portofolio</span>
         </b-dropdown-item>
 
-        <b-dropdown-item :to="{ name: 'accounts' }">
+        <b-dropdown-item :to="{ name: 'wallet-connect' }">
           <feather-icon
             icon="KeyIcon"
             size="16"
@@ -158,9 +131,6 @@ import {
   BDropdown, BDropdownItem,
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
-import DarkToggler from '@core/layouts/components/app-navbar/components/DarkToggler.vue'
-import Locale from '@core/layouts/components/app-navbar/components/Locale.vue'
-import SearchBar from '@core/layouts/components/app-navbar/components/SearchBar.vue'
 // import CartDropdown from '@core/layouts/components/app-navbar/components/CartDropdown.vue'
 import { getLocalAccounts, timeIn, toDay } from '@/libs/utils'
 // import UserDropdown from '@core/layouts/components/app-navbar/components/UserDropdown.vue'
@@ -178,9 +148,6 @@ export default {
     BDropdownItem,
 
     // Navbar Components
-    DarkToggler,
-    Locale,
-    SearchBar,
     // CartDropdown,
     // UserDropdown,
   },

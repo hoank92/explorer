@@ -1,276 +1,291 @@
 <template>
   <div>
-    <form-wizard
-      ref="wizard"
-      color="#7367F0"
-      :title="null"
-      :subtitle="null"
-      shape="square"
-      finish-button-text="Save"
-      back-button-text="Previous"
-      class="steps-transparent mb-3 md"
-      @on-complete="formSubmitted"
+    <b-overlay
+      :show="walletConnecting"
+      rounded="sm"
     >
-      <!-- Device tab -->
-      <tab-content
-        title="Device"
-        :before-change="validationFormDevice"
+      <template #overlay>
+        <div class="d-flex align-items-center">
+          <b-spinner class="ml-auto" />
+          <span style="margin-left: 10px">Connecting to Wallet</span>
+        </div>
+      </template>
+      <form-wizard
+        v-if="walletConnected"
+        ref="wizard"
+        color="#7367F0"
+        :title="null"
+        :subtitle="null"
+        shape="square"
+        finish-button-text="Save"
+        back-button-text="Previous"
+        class="steps-transparent mb-3 md"
+        @on-complete="formSubmitted"
       >
-        <validation-observer
-          ref="deviceRules"
-          tag="form"
+        <!-- Device tab -->
+        <tab-content
+          v-if="false"
+          title="Connect to Wallet"
+          :before-change="validationFormDevice"
         >
-          <b-row>
-            <b-col md="12">
-              <b-form-group
-                label="Select a device to import accounts"
-                label-for="device"
-              >
-                <validation-provider
-                  #default="{ errors }"
-                  name="device"
-                  rules="required"
+          <validation-observer
+            ref="deviceRules"
+            tag="form"
+          >
+            <b-row>
+              <b-col md="12">
+                <b-form-group
+                  label="Select a device to import accounts"
+                  label-for="device"
                 >
-                  <b-form-radio-group
-                    v-model="device"
-                    stacked
+                  <validation-provider
+                    #default="{ errors }"
+                    name="device"
+                    rules="required"
                   >
+                    <b-form-radio-group
+                      v-model="device"
+                      stacked
+                    >
 
-                    <b-form-radio
-                      v-model="device"
-                      name="device"
-                      value="keplr"
-                      checked
-                      class="mb-1 mt-1"
-                    >
-                      Keplr
-                    </b-form-radio>
-                    <b-form-radio
-                      v-model="device"
-                      name="device"
-                      value="ledger"
-                      class="mb-1"
-                    >
-                      Ledger via WebUSB
-                    </b-form-radio>
-                    <b-form-radio
-                      v-model="device"
-                      name="device"
-                      value="ledger2"
-                      class="mb-1"
-                    >
-                      Ledger via Bluetooth
-                    </b-form-radio>
-                    <b-form-radio
-                      v-model="device"
-                      name="device"
-                      value="address"
-                    >
-                      Address (Observe Only)
-                    </b-form-radio>
-                  </b-form-radio-group>
-                  <b-form-input
-                    v-if="device === 'address'"
-                    v-model="address"
-                    class="mt-1"
-                    name="address"
-                    placeholder="cosmos1ev0vtddkl7jlwfawlk06yzncapw2x9quyxx75u"
-                  />
-                  <small class="text-danger">{{ debug }}{{ errors[0] }}</small>
-                </validation-provider>
-              </b-form-group>
-            </b-col>
-            <b-col
-              v-if="device.startsWith('ledger')"
-              md="12"
-            >
-              <b-form-group
-                label="HD Path"
-                label-for="hdpath"
+                      <b-form-radio
+                        v-model="device"
+                        name="device"
+                        value="keplr"
+                        checked
+                        class="mb-1 mt-1"
+                      >
+                        Keplr
+                      </b-form-radio>
+                      <b-form-radio
+                        v-model="device"
+                        name="device"
+                        value="ledger"
+                        class="mb-1"
+                      >
+                        Ledger via WebUSB
+                      </b-form-radio>
+                      <b-form-radio
+                        v-model="device"
+                        name="device"
+                        value="ledger2"
+                        class="mb-1"
+                      >
+                        Ledger via Bluetooth
+                      </b-form-radio>
+                      <b-form-radio
+                        v-model="device"
+                        name="device"
+                        value="address"
+                      >
+                        Address (Observe Only)
+                      </b-form-radio>
+                    </b-form-radio-group>
+                    <b-form-input
+                      v-if="device === 'address'"
+                      v-model="address"
+                      class="mt-1"
+                      name="address"
+                      placeholder="cosmos1ev0vtddkl7jlwfawlk06yzncapw2x9quyxx75u"
+                    />
+                    <small class="text-danger">{{ debug }}{{ errors[0] }}</small>
+                  </validation-provider>
+                </b-form-group>
+              </b-col>
+              <b-col
+                v-if="device.startsWith('ledger')"
+                md="12"
               >
-                <validation-provider
-                  #default="{ errors }"
-                  name="HD Path"
-                  rules="required"
+                <b-form-group
+                  label="HD Path"
+                  label-for="hdpath"
                 >
-                  <b-form-input
-                    v-model="hdpath"
-                    class="mt-1"
-                    name="hdpath"
-                    placeholder="m/44'/118/0'/0/0"
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-form-group>
-            </b-col>
-          </b-row>
-        </validation-observer>
-      </tab-content>
+                  <validation-provider
+                    #default="{ errors }"
+                    name="HD Path"
+                    rules="required"
+                  >
+                    <b-form-input
+                      v-model="hdpath"
+                      class="mt-1"
+                      name="hdpath"
+                      placeholder="m/44'/118/0'/0/0"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </validation-observer>
+        </tab-content>
 
-      <!-- address  -->
-      <tab-content
-        title="Accounts"
-        :before-change="validationFormAddress"
-      >
-        <validation-observer
-          ref="accountRules"
-          tag="form"
+        <!-- address  -->
+        <tab-content
+          title="Accounts"
+          :before-change="validationFormAddress"
         >
-          <b-row>
-            <b-col md="12">
-              <b-form-group
-                label="Account Name"
-                label-for="account_name"
+          <validation-observer
+            ref="accountRules"
+            tag="form"
+          >
+            <b-row>
+              <b-col
+                v-if="hdpath"
+                md="12"
               >
-                <validation-provider
-                  #default="{ errors }"
-                  name="Account Name"
-                  rules="required"
-                >
-                  <b-form-input
-                    id="account_name"
-                    v-model="name"
-                    :state="errors.length > 0 ? false:null"
-                    placeholder="Ping Nano X"
-                    :readonly="edit"
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-form-group>
-            </b-col>
-            <b-col
-              v-if="hdpath"
-              md="12"
-            >
-              <b-form-group
-                label="HD Path"
-                label-for="ir"
-              >
-                <b-form-input
-                  id="ir"
-                  :value="hdpath"
-                  readonly
-                />
-              </b-form-group>
-            </b-col>
-            <b-col
-              v-if="accounts"
-              md="12"
-            >
-              <b-form-group
-                label="Public Key"
-                label-for="ir"
-              >
-                <validation-provider
-                  #default="{ errors }"
-                  name="Public Key"
-                  rules="required"
+                <b-form-group
+                  label="HD Path"
+                  label-for="ir"
                 >
                   <b-form-input
                     id="ir"
-                    :value="formatPubkey(accounts.pubkey)"
+                    :value="hdpath"
                     readonly
-                    :state="errors.length > 0 ? false:null"
                   />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-form-group>
-            </b-col>
-            <b-col md="12">
-              <b-form-group
-                label="Import Address For Chains:"
+                </b-form-group>
+              </b-col>
+              <b-col
+                v-if="accounts"
+                md="12"
               >
-                <validation-provider
-                  #default="{ errors }"
-                  name="addrs"
-                  rules="required"
+                <b-form-group
+                  label="Public Key"
+                  label-for="ir"
                 >
-                  <div class="demo-inline-spacing text-uppercase">
-                    <b-row>
-                      <b-col
-                        v-for="item, key in chains"
-                        :key="key"
-                        xs="12"
-                        md="4"
-                        lg="3"
-                        class="mb-25"
-                      >
-                        <b-form-checkbox
-                          v-model="selected"
-                          name="addrs"
-                          :value="key"
-                        >
-                          <b-avatar
-                            :src="item.logo"
-                            size="18"
-                            variant="light-primary"
-                            rounded=""
-                          />
-                          <span
-                            v-b-tooltip.hover.v-primary
-                            :title="`Coin Type: ${item.coin_type}`"
-                            :class="hdpath.startsWith(`m/44'/${item.coin_type}`)?'text-success':'text-danger'"
-                          > {{ item.chain_name }}</span>
-                        </b-form-checkbox>
-                      </b-col>
-                    </b-row>
-                  </div>
-                  <small class="text-success">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-form-group>
-              <b-alert
-                show
-                variant="info"
+                  <validation-provider
+                    #default="{ errors }"
+                    name="Public Key"
+                    rules="required"
+                  >
+                    <b-form-input
+                      id="ir"
+                      :value="formatPubkey(accounts.pubkey)"
+                      readonly
+                      :state="errors.length > 0 ? false:null"
+                    />
+                    <small class="text-danger">{{ errors[0] }}</small>
+                  </validation-provider>
+                </b-form-group>
+              </b-col>
+              <b-col
+                v-if="false"
+                md="12"
               >
-                <div class="alert-heading">
-                  IMPORTANT
-                </div>
-                <div class="alert-body">
-                  <div>
-                    If you don't have Ledger, Do not import those addresses in <b class="text-danger">RED</b>. Because these addresses are derived from different coin_type which is not as same as the official one
+                <b-form-group
+                  label="Import Address For Chains:"
+                >
+                  <validation-provider
+                    #default="{ errors }"
+                    name="addrs"
+                    rules="required"
+                  >
+                    <div class="demo-inline-spacing text-uppercase">
+                      <b-row>
+                        <b-col
+                          v-for="item, key in chains"
+                          :key="key"
+                          xs="12"
+                          md="4"
+                          lg="3"
+                          class="mb-25"
+                        >
+                          <b-form-checkbox
+                            v-model="selected"
+                            name="addrs"
+                            :value="key"
+                          >
+                            <b-avatar
+                              :src="item.logo"
+                              size="18"
+                              variant="light-primary"
+                              rounded=""
+                            />
+                            <span
+                              v-b-tooltip.hover.v-primary
+                              :title="`Coin Type: ${item.coin_type}`"
+                              :class="hdpath.startsWith(`m/44'/${item.coin_type}`)?'text-success':'text-danger'"
+                            > {{ item.chain_name }}</span>
+                          </b-form-checkbox>
+                        </b-col>
+                      </b-row>
+                    </div>
+                    <small class="text-success">{{ errors[0] }}</small>
+                  </validation-provider>
+                </b-form-group>
+                <b-alert
+                  show
+                  variant="info"
+                >
+                  <div class="alert-heading">
+                    IMPORTANT
                   </div>
-                </div>
-              </b-alert>
+                  <div class="alert-body">
+                    <div>
+                      If you don't have Ledger, Do not import those addresses in <b class="text-danger">RED</b>. Because these addresses are derived from different coin_type which is not as same as the official one
+                    </div>
+                  </div>
+                </b-alert>
+              </b-col>
+            </b-row>
+          </validation-observer>
+          <b-row class="mb-2">
+            <b-col
+              v-for="i in addresses"
+              :key="i.addr"
+              cols="12"
+            >
+              <b-form-group label="Address">
+                <b-form-input readonly :value="i.addr" />
+              </b-form-group>
             </b-col>
           </b-row>
-        </validation-observer>
-      </tab-content>
+        </tab-content>
 
-      <tab-content
-        title="Confirmation"
+        <tab-content
+          v-if="false"
+          title="Confirmation"
+        >
+          <div class="d-flex border-bottom mb-2">
+            <feather-icon
+              icon="UserIcon"
+              size="19"
+              class="mb-50"
+            />
+            <h4 class="mb-0 ml-50">
+              {{ name }} <small> {{ hdpath }}</small>
+            </h4>
+          </div>
+
+          <b-row class="mb-2">
+            <b-col
+              v-for="i in addresses"
+              :key="i.addr"
+              cols="12"
+            >
+              <b-input-group class="mb-25">
+                <b-input-group-prepend is-text>
+                  <b-avatar
+                    :src="i.logo"
+                    size="18"
+                    variant="light-primary"
+                    rounded
+                  />
+                </b-input-group-prepend>
+                <b-form-input :value="i.addr" />
+              </b-input-group>
+            </b-col>
+          </b-row>
+        </tab-content>
+      </form-wizard>
+      <b-alert
+        :show="!walletConnected && !walletConnecting"
+        variant="danger"
       >
-        <div class="d-flex border-bottom mb-2">
-          <feather-icon
-            icon="UserIcon"
-            size="19"
-            class="mb-50"
-          />
-          <h4 class="mb-0 ml-50">
-            {{ name }} <small> {{ hdpath }}</small>
-          </h4>
+        <div class="alert-body">
+          Cannot connect to Wallet
         </div>
-
-        <b-row class="mb-2">
-          <b-col
-            v-for="i in addresses"
-            :key="i.addr"
-            cols="12"
-          >
-            <b-input-group class="mb-25">
-              <b-input-group-prepend is-text>
-                <b-avatar
-                  :src="i.logo"
-                  size="18"
-                  variant="light-primary"
-                  rounded
-                />
-              </b-input-group-prepend>
-              <b-form-input :value="i.addr" />
-            </b-input-group>
-          </b-col>
-        </b-row>
-      </tab-content>
-    </form-wizard>
+      </b-alert>
+    </b-overlay>
   </div>
 </template>
 
@@ -293,6 +308,8 @@ import {
   BInputGroupPrepend,
   BFormRadioGroup,
   VBTooltip,
+  BOverlay,
+  BSpinner,
 } from 'bootstrap-vue'
 import { required } from '@validations'
 import store from '@/store'
@@ -304,6 +321,8 @@ import { toHex } from '@cosmjs/encoding'
 export default {
   components: {
     BAlert,
+    BOverlay,
+    BSpinner,
     ValidationProvider,
     ValidationObserver,
     FormWizard,
@@ -330,13 +349,15 @@ export default {
       device: 'keplr',
       address: '',
       hdpath: "m/44'/118/0'/0/0",
-      name: '',
+      name: 'Your Wallet',
       options: {},
       required,
       selected: [],
       accounts: null,
       exludes: [], // HD Path is NOT supported,
       edit: false,
+      walletConnecting: true,
+      walletConnected: false,
     }
   },
   computed: {
@@ -366,8 +387,10 @@ export default {
   },
   mounted() {
     const { selected } = store.state.chains
+    console.log({ selected })
     if (selected && selected.chain_name && !this.exludes.includes(selected.chain_name)) {
       this.selected.push(selected.chain_name)
+      console.log({ v: selected.chain_name })
     }
     const name = new URLSearchParams(window.location.search).get('name')
     const wallets = getLocalAccounts()
@@ -389,6 +412,19 @@ export default {
         }
       }
     } else {
+      this.walletConnecting = true
+      this.walletConnected = false
+      this.cennectKeplr().then(accounts => {
+        if (accounts) {
+        // eslint-disable-next-line prefer-destructuring
+          this.accounts = accounts[0]
+          this.walletConnected = true
+        }
+      }).catch(() => {
+        this.walletConnected = false
+      }).finally(() => {
+        this.walletConnecting = false
+      })
       this.hdpath = `m/44'/${selected.coin_type}/0'/0/0`
     }
   },
@@ -407,13 +443,13 @@ export default {
       return getLedgerAddress(transport, this.hdpath)
     },
     async cennectKeplr() {
-      if (!window.getOfflineSigner || !window.keplr) {
+      if (!window.getOfflineSigner || !window.astra) {
         this.debug = 'Please install keplr extension'
         return null
       }
       // const chainId = 'cosmoshub'
       const chainId = await this.$http.getLatestBlock().then(ret => ret.block.header.chain_id)
-      await window.keplr.enable(chainId)
+      await window.astra.enable(chainId)
       const offlineSigner = window.getOfflineSigner(chainId)
       return offlineSigner.getAccounts()
     },
@@ -454,7 +490,7 @@ export default {
         },
       })
 
-      this.$router.push('./accounts')
+      this.$router.push('/wallet')
     },
     async validationFormDevice() {
       let ok = String(this.name).length > 0

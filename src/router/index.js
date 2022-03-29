@@ -14,6 +14,14 @@ const router = new VueRouter({
     {
       path: '/',
       name: 'home',
+      component: () => import('@/views/Homee.vue'),
+      meta: {
+        pageTitle: 'Home',
+      },
+    },
+    {
+      path: '/home',
+      name: 'homee',
       // component: () => import('@/views/Home.vue'),
       component: () => import('@/views/Summary.vue'),
       meta: {
@@ -64,6 +72,21 @@ const router = new VueRouter({
           {
             text: 'Buy me a cup of coffee!',
             active: false,
+          },
+        ],
+      },
+    },
+    {
+      path: '/wallet',
+      alias: '/wallet-connect',
+      name: 'wallet-connect',
+      component: () => import('@/views/WalletConnect.vue'),
+      meta: {
+        pageTitle: 'Wallet',
+        breadcrumb: [
+          {
+            text: 'Wallet',
+            active: true,
           },
         ],
       },

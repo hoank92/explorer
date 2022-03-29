@@ -142,22 +142,23 @@ export function extractAccountNumberAndSequence(ret) {
 }
 
 export function getUserCurrencySign() {
-  let s = ''
-  switch (getUserCurrency()) {
-    case 'cny':
-    case 'jpy':
-      s = '¥'
-      break
-    case 'krw':
-      s = '₩'
-      break
-    case 'eur':
-      s = '€'
-      break
-    default:
-      s = '$'
-  }
-  return s
+  return 'Xu'
+  // let s = ''
+  // switch (getUserCurrency()) {
+  //   case 'cny':
+  //   case 'jpy':
+  //     s = '¥'
+  //     break
+  //   case 'krw':
+  //     s = '₩'
+  //     break
+  //   case 'eur':
+  //     s = '€'
+  //     break
+  //   default:
+  //     s = '$'
+  // }
+  // return s
 }
 
 export function consensusPubkeyToHexAddress(consensusPubkey) {
@@ -213,10 +214,10 @@ export async function sign(device, chainId, signerAddress, messages, fee, memo, 
       break
     case 'keplr':
     default:
-      if (!window.getOfflineSigner || !window.keplr) {
+      if (!window.getOfflineSigner || !window.astra) {
         throw new Error('Please install keplr extension')
       }
-      await window.keplr.enable(chainId)
+      await window.astra.enable(chainId)
       // signer = window.getOfflineSigner(chainId)
       signer = window.getOfflineSignerOnlyAmino(chainId)
   }
@@ -367,7 +368,7 @@ export function formatTokenAmount(tokenAmount, fraction = 2, tokenDenom = 'uatom
   const denom = tokenDenom.denom_trace ? tokenDenom.denom_trace.base_denom : tokenDenom
   let amount = 0
 
-  let exp = 6
+  let exp = 0
   const config = Object.values(getLocalChains())
 
   config.forEach(x => {

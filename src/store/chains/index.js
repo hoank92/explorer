@@ -5,7 +5,7 @@
  * @LastEditors: dingyiming
  * @LastEditTime: 2021-11-20 15:33:07
  */
-import { isTestnet } from '@/libs/utils'
+import { isTestnet, getLocalAccounts } from '@/libs/utils'
 
 let chains = {}
 
@@ -38,6 +38,15 @@ export default {
   getters: {
     getchains: state => state.chains,
     getAvatarById: state => id => state.avatars[id],
+    getDefaultWalletAddress: () => () => {
+      try {
+        const defaultWallet = localStorage.getItem('default-wallet')
+        return getLocalAccounts()[defaultWallet].address[0].addr
+      } catch (e) {
+        console.log(e)
+        return null
+      }
+    },
   },
   mutations: {
     setup_sdk_version(state, info) {

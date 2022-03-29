@@ -222,7 +222,7 @@
               </b-col>
             </b-row>
 
-            <b-row>
+            <b-row v-if="false">
               <b-col>
                 <wallet-input-vue v-model="wallet" />
               </b-col>
@@ -306,7 +306,7 @@ export default {
       memo: '',
       fee: '900',
       feeDenom: '',
-      wallet: 'ledgerUSB',
+      wallet: 'keplr',
       error: null,
       sequence: 1,
       accountNumber: 0,
@@ -338,7 +338,7 @@ export default {
     },
   },
   created() {
-    // console.log('address: ', this.address)
+    console.log('address: ', this.address)
   },
   methods: {
     printDenom() {

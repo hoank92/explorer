@@ -93,16 +93,9 @@
       no-body
     >
       <b-card-header class="d-flex justify-content-between">
-        <small class="d-none d-md-block">
-          <b-badge variant="danger">
-              &nbsp;
-          </b-badge>
-          Top 33%
-          <b-badge variant="warning">
-              &nbsp;
-          </b-badge>
-          Top 67% of Voting Power
-        </small>
+        <b-card-title>
+          <span>Staking</span>
+        </b-card-title>
         <b-card-title>
           <span>Validators {{ validators.length }}/{{ stakingParameters.max_validators }} </span>
         </b-card-title>
@@ -116,7 +109,13 @@
           striped
           hover
           responsive="sm"
+          :busy="validatorLoading"
         >
+          <template #table-busy>
+            <div class="text-center">
+              <b-spinner type="grow" label="Loading..." />
+            </div>
+          </template>
           <!-- A virtual column -->
           <template #cell(index)="data">
             <b-badge :variant="rankBadge(data)">
@@ -196,13 +195,16 @@
         </b-table>
       </b-card-body>
     </b-card>
-    <operation-delegate-component :validator-address="validator_address" />
+    <operation-delegate-component
+      :address="walletAddress"
+      :validator-address="validator_address"
+    />
   </div>
 </template>
 
 <script>
 import {
-  BTable, BMedia, BAvatar, BBadge, BCard, BCardHeader, BCardTitle, VBTooltip, BCardBody, BButton,
+  BTable, BMedia, BAvatar, BBadge, BCard, BCardHeader, BCardTitle, VBTooltip, BCardBody, BButton, BSpinner,
 } from 'bootstrap-vue'
 import {
   Validator, percent, StakingParameters, formatToken,
@@ -224,6 +226,7 @@ export default {
     BCardBody,
     BButton,
     OperationDelegateComponent,
+    BSpinner,
   },
   directives: {
     'b-tooltip': VBTooltip,
@@ -247,12 +250,14 @@ export default {
         'pbvaloper1jxv0u20scum4trha72c7ltfgfqef6nsc5nn6cf',
         'rizonvaloper1jxv0u20scum4trha72c7ltfgfqef6nsczn2l68',
       ],
+      isBusy: true,
       islive: true,
       validator_address: null,
       mintInflation: 0,
       stakingPool: 1,
       stakingParameters: new StakingParameters(),
-      validators: [new Validator()],
+      validators: [],
+      validatorLoading: true,
       delegations: [new Validator()],
       changes: {},
       validator_fields: [
@@ -291,6 +296,9 @@ export default {
     }
   },
   computed: {
+    walletAddress() {
+      return this.$store.getters['chains/getDefaultWalletAddress']()
+    },
     pingVals() {
       return this.list.filter(x => this.keys.includes(x.operator_address))
     },
@@ -306,6 +314,7 @@ export default {
     },
   },
   created() {
+    this.validatorLoading = true
     this.$http.getValidatorListByHeight('latest').then(data => {
       let height = Number(data.block_height)
       if (height > 14400) {
@@ -347,6 +356,7 @@ export default {
       }
       this.stakingPool = total
       this.validators = temp
+      this.validatorLoading = false
 
       // fetch avatar from keybase
       let promise = Promise.resolve()
