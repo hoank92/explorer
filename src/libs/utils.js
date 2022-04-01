@@ -368,7 +368,7 @@ export function formatTokenAmount(tokenAmount, fraction = 2, tokenDenom = 'uatom
   const denom = tokenDenom.denom_trace ? tokenDenom.denom_trace.base_denom : tokenDenom
   let amount = 0
 
-  let exp = 0
+  let exp = 6
   const config = Object.values(getLocalChains())
 
   config.forEach(x => {
