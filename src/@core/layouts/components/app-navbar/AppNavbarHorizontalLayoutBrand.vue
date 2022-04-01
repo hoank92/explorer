@@ -13,7 +13,7 @@
             />
           </span>
           <h2 class="brand-text mb-0">
-            {{ appName }}11
+            {{ appName }}
           </h2>
         </b-link>
       </li>

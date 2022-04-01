@@ -675,6 +675,7 @@ export default {
       })
       // localStorage.setItem('accounts', JSON.stringify(this.accounts))
       localStorage.removeItem('accounts')
+      localStorage.removeItem('default-wallet')
     },
     copy(v) {
       this.$copyText(v).then(() => {
