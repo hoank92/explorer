@@ -3,7 +3,16 @@
     "api": "https://api.astranaut.network",
     "sdk_version": "0.42.9",
     "addr_prefix": "astra",
-    "excludes": "mint",
+    "coin_type": "60",
+    "min_tx_fee": "3000000000000000",
     "logo": "https://salt.tikicdn.com/ts/ta/cf/41/a6/5cfa6980b460bca5292103cbf93c69a6.png",
-    "coin_type": "118"
+    "assets": [
+        {
+            "base": "aastra",
+            "symbol": "astra",
+            "exponent": "18",
+            "coingecko_id": "",
+            "logo": "https://salt.tikicdn.com/ts/ta/cf/41/a6/5cfa6980b460bca5292103cbf93c69a6.png"
+        }
+    ]
 }
